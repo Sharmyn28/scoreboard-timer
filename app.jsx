@@ -2,7 +2,8 @@ class Timer extends React.Component{
   constructor (props) {
     super (props);
     this.state = {
-    date: new Date()
+      time: 0,
+      running : true
     }
   }
 
@@ -14,12 +15,17 @@ class Timer extends React.Component{
     const stop = (e) => {
       this.stopTimer();
     }
+
+    const reset = (e) => {
+      this.resetTimer();
+    }
+
     return (
       <div>
         <h2> {title} </h2>
-        <h1 className='stopwatch-time'>{this.state.date.toLocaleTimeString()}</h1>
+        <h1 className='stopwatch-time'>{this.state.time}</h1>
         <button onClick={start}> start </button>
-        <button onClick={stop}> stop </button>
+        <button onClick={reset}> reset </button>
       </div>
     );
   }
@@ -28,14 +34,21 @@ class Timer extends React.Component{
   startTimer () {
     this.timer = setInterval( () => {
         this.setState ({
-            date : new Date()
+            time : this.state.time +1
         }) ;
     }, 1000);
   }
 
   //componentWillUnmount
   stopTimer () {
-      clearInterval(this.timer);
+    clearInterval(this.timer);
+  }
+
+  resetTimer(){
+    clearInterval(this.timer);
+    this.setState({
+      time : 0
+    })
   }
 }
 
