@@ -1,3 +1,56 @@
+class Timer extends React.Component{
+  constructor (props) {
+    super (props);
+    this.state = {
+      time: 0,
+      running : true
+    }
+  }
+
+  render () {
+    const {title} = this.props;
+    const start = (e) => {
+      this.startTimer();
+    }
+    const stop = (e) => {
+      this.stopTimer();
+    }
+
+    const reset = (e) => {
+      this.resetTimer();
+    }
+
+    return (
+      <div>
+        <h2> {title} </h2>
+        <h1 className='stopwatch-time'>{this.state.time}</h1>
+        <button onClick={start}> start </button>
+        <button onClick={reset}> reset </button>
+      </div>
+    );
+  }
+
+  // componentDidMount
+  startTimer () {
+    this.timer = setInterval( () => {
+        this.setState ({
+            time : this.state.time +1
+        }) ;
+    }, 1000);
+  }
+
+  //componentWillUnmount
+  stopTimer () {
+    clearInterval(this.timer);
+  }
+
+  resetTimer(){
+    clearInterval(this.timer);
+    this.setState({
+      time : 0
+    })
+  }
+}
 
 class Model{
   constructor(){
@@ -19,7 +72,6 @@ class Model{
       },
     ];
     
-    this.lengthA = this.players.length;
     this.inputValue = null;
     this.render = null;
   }
@@ -38,26 +90,29 @@ class Model{
       score: 0,
       id: Utils.uuid()
     })
-      //this.inputValue.value = '';
-      console.log('aumenta usuario');
+      player = '';    
+      console.log('new player');
       this.render();
-    
   }
 
   increasePoints (index) {
-    console.log('aumenta');
+    console.log('gaining points');
     this.players[index].score ++;
     this.render();
   }
 
   decreasePoints (index){
-    console.log('disminuye');
+    console.log('losing points');
     this.players[index].score --;
     this.render();
   }
 }
 
-/******************** */
+/**************
+ * <h2>STOPWATCH</h2>
+ * <h1 className='stopwatch-time'>0</h1>
+ * <button>start</button><button>reset</button>
+ * ****** */
 
 const Header = ({model}) => {
   return (
@@ -69,10 +124,8 @@ const Header = ({model}) => {
             <tr><td>TOTAL POINTS:</td><td>{model.players.map(a => a.score).reduce((a, b) => a + b)}</td></tr>
           </tbody>
         </table>
-        <div className='stopwatch'>
-          <h2>STOPWATCH</h2>
-          <h1 className='stopwatch-time'>0</h1>
-          <button>start</button><button>reset</button>
+        <div className='stopwatch'>         
+          <Timer title='STOPWATCH' />
         </div>
       </header>
     </div>
