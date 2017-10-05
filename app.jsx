@@ -3,7 +3,7 @@ class Timer extends React.Component{
     super (props);
     this.state = {
       time: 0,
-      running : true
+      running : 'start'
     }
   }
 
@@ -24,7 +24,7 @@ class Timer extends React.Component{
       <div>
         <h2> {title} </h2>
         <h1 className='stopwatch-time'>{this.state.time}</h1>
-        <button onClick={start}> start </button>
+        <button onClick={this.state.running === 'start' ? start : stop}> {this.state.running} </button>
         <button onClick={reset}> reset </button>
       </div>
     );
@@ -37,11 +37,18 @@ class Timer extends React.Component{
             time : this.state.time +1
         }) ;
     }, 1000);
+
+    this.setState({
+      running: 'stop'
+    })
   }
 
   //componentWillUnmount
   stopTimer () {
     clearInterval(this.timer);
+    this.setState({
+      running: 'start'
+    })
   }
 
   resetTimer(){
@@ -72,7 +79,7 @@ class Model{
       },
     ];
     
-    this.inputValue = null;
+    this.input = null;
     this.render = null;
   }
 
@@ -86,11 +93,11 @@ class Model{
 
   addPlayer (player) {
     this.players.push({
-      name: player,
+      name: player.value,
       score: 0,
       id: Utils.uuid()
     })
-      player = '';    
+      player.value = '';    
       console.log('new player');
       this.render();
   }
@@ -107,12 +114,6 @@ class Model{
     this.render();
   }
 }
-
-/**************
- * <h2>STOPWATCH</h2>
- * <h1 className='stopwatch-time'>0</h1>
- * <button>start</button><button>reset</button>
- * ****** */
 
 const Header = ({model}) => {
   return (
@@ -155,9 +156,9 @@ const PlayerForm = ({model}) => {
     <div className='add-player-form'>
       <form onSubmit={e=>{
         e.preventDefault();
-        model.addPlayer(model.inputValue);
+        model.addPlayer(model.input);
         }}>
-        <input type="text" placeholder='ENTER A NAME' onChange={e=>(model.inputValue = e.target.value)}/>
+        <input type="text" placeholder='ENTER A NAME' onChange={e=>(model.input = e.target)}/>
         <input type="submit" value='add player'/>
       </form>
     </div>
